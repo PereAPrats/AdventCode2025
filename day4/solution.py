@@ -11,28 +11,38 @@ if there are fewer than four rolls in the eight adjacent positions
 (orthogonal and diagonal). Your task is to analyze the grid and 
 determine how many rolls of paper are accessible under this rule.
 """
+
+# Function to check if a roll of paper is accessible
 def is_accessible(row, col, grid, max):
-    direcctions = [ (-1, -1), (-1, 0), (-1, 1),
+    # Directions for the 8 adjacent cells
+    directions = [ (-1, -1), (-1, 0), (-1, 1),
                     (0, -1),           (0, 1),
                     (1, -1),  (1, 0),  (1, 1)]
     
-    coun = 0
-    
-    for dr, dc in direcctions:
+    count = 0    
+    # Check all adjacent cells
+    for dr, dc in directions:
+        # Calculate the position of the adjacent cell
         r, c = row + dr, col + dc
+        # Ensure the position is within bounds
         if 0 <= r < len(grid) and 0 <= c < len(grid[0]):
+            # Count if there's a roll of paper
             if grid[r][c] == '@':
-                coun += 1
-                
-    return coun < max
+                count += 1
+    # A roll is accessible if fewer than 'max' adjacent rolls are found
+    # Note that if the rol is in the corner or edge, it naturally has fewer adjacent rolls     
+    return count < max
 
 with open('input.txt', 'r') as file:
     grid = [list(line.strip()) for line in file.readlines()]
     
 accessible_count = 0
 
+# Iterate through each cell in the grid
 for r in range(len(grid)):
+    # Check each cell in the grid
     for c in range(len(grid[0])):
+        # If it's a roll of paper, check accessibility
         if grid[r][c] == '@' and is_accessible(r, c, grid, 4):
             accessible_count += 1
             
@@ -50,13 +60,15 @@ removing accessible rolls until no more can be removed.
 changes = True
 removable_count = 0
 
-
+# Iteratively remove accessible rolls until no more can be removed
 while changes:
     changes = False
-    
+    # Check each cell in the grid
     for r in range(len(grid)):
         for c in range(len(grid[0])):
+            # If it's a roll of paper, check accessibility
             if grid[r][c] == '@' and is_accessible(r, c, grid, 4):
+                # Remove the roll of paper, count it, and mark that a change was made to continue the loop
                 grid[r][c] = '.'
                 changes = True
                 removable_count += 1
